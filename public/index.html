@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Trading Bot Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-line"></i> Crypto Trading Bot Dashboard</h1>
+                <div class="status-indicators">
+                    <div class="status-item" id="bot-status">
+                        <i class="fas fa-robot"></i>
+                        <span>Bot: <span id="bot-status-text">Connecting...</span></span>
+                    </div>
+                    <div class="status-item" id="websocket-status">
+                        <i class="fas fa-wifi"></i>
+                        <span>WebSocket: <span id="websocket-status-text">Connecting...</span></span>
+                    </div>
+                    <div class="status-item" id="database-status">
+                        <i class="fas fa-database"></i>
+                        <span>Database: <span id="database-status-text">Connecting...</span></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Stats Cards -->
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-signal"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Total Signals</h3>
+                            <div class="stat-value" id="total-signals">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon buy">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Buy Signals</h3>
+                            <div class="stat-value" id="buy-signals">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon sell">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Sell Signals</h3>
+                            <div class="stat-value" id="sell-signals">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Avg Strength</h3>
+                            <div class="stat-value" id="avg-strength">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Price Charts -->
+            <section class="charts-section">
+                <div class="chart-container">
+                    <h2><i class="fas fa-chart-area"></i> Price Charts</h2>
+                    <div class="chart-tabs">
+                        <button class="tab-btn active" data-symbol="BTCUSDT">BTC/USDT</button>
+                        <button class="tab-btn" data-symbol="ETHUSDT">ETH/USDT</button>
+                        <button class="tab-btn" data-symbol="BNBUSDT">BNB/USDT</button>
+                        <button class="tab-btn" data-symbol="TRXUSDT">TRX/USDT</button>
+                        <button class="tab-btn" data-symbol="ADAUSDT">ADA/USDT</button>
+                        <button class="tab-btn" data-symbol="ETCUSDT">ETC/USDT</button>
+                        <button class="tab-btn" data-symbol="SOLUSDT">SOL/USDT</button>
+                        <button class="tab-btn" data-symbol="XRPUSDT">XRP/USDT</button>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="price-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Data -->
+            <section class="live-data-section">
+                <div class="live-data-grid">
+                    <div class="live-data-card">
+                        <h3><i class="fas fa-broadcast-tower"></i> Live Prices</h3>
+                        <div class="price-list" id="live-prices">
+                            <!-- Live prices will be populated here -->
+                        </div>
+                    </div>
+                    <div class="live-data-card">
+                        <h3><i class="fas fa-chart-bar"></i> Technical Indicators</h3>
+                        <div class="indicators-list" id="technical-indicators">
+                            <!-- Technical indicators will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Signals -->
+            <section class="signals-section">
+                <div class="signals-container">
+                    <h2><i class="fas fa-bell"></i> Recent Trading Signals</h2>
+                    <div class="signals-controls">
+                        <button class="btn" id="refresh-signals">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <select id="signal-filter">
+                            <option value="all">All Signals</option>
+                            <option value="BUY">Buy Signals</option>
+                            <option value="SELL">Sell Signals</option>
+                        </select>
+                    </div>
+                    <div class="signals-table-container">
+                        <table class="signals-table" id="signals-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Symbol</th>
+                                    <th>Type</th>
+                                    <th>Price</th>
+                                    <th>Strength</th>
+                                    <th>Entry</th>
+                                    <th>Stop Loss</th>
+                                    <th>Take Profit</th>
+                                    <th>R/R</th>
+                                </tr>
+                            </thead>
+                            <tbody id="signals-tbody">
+                                <!-- Signals will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bot Controls -->
+            <section class="controls-section">
+                <div class="controls-container">
+                    <h2><i class="fas fa-cogs"></i> Bot Controls</h2>
+                    <div class="controls-grid">
+                        <div class="control-group">
+                            <label>Bot Status</label>
+                            <button class="btn" id="start-bot">
+                                <i class="fas fa-play"></i> Start Bot
+                            </button>
+                            <button class="btn" id="stop-bot">
+                                <i class="fas fa-stop"></i> Stop Bot
+                            </button>
+                        </div>
+                        <div class="control-group">
+                            <label>Symbols</label>
+                            <div class="symbol-checkboxes">
+                                <label><input type="checkbox" value="BTCUSDT" checked> BTC/USDT</label>
+                                <label><input type="checkbox" value="ETHUSDT" checked> ETH/USDT</label>
+                                <label><input type="checkbox" value="BNBUSDT" checked> BNB/USDT</label>
+                                <label><input type="checkbox" value="TRXUSDT" checked> TRX/USDT</label>
+                                <label><input type="checkbox" value="ADAUSDT" checked> ADA/USDT</label>
+                                <label><input type="checkbox" value="ETCUSDT" checked> ETC/USDT</label>
+                                <label><input type="checkbox" value="SOLUSDT" checked> SOL/USDT</label>
+                                <label><input type="checkbox" value="XRPUSDT" checked> XRP/USDT</label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label>Trading Intervals</label>
+                            <div class="interval-checkboxes">
+                                <label><input type="checkbox" value="5m" checked> 5m (Main)</label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label>Confirmation Intervals</label>
+                            <div class="interval-checkboxes">
+                                <label><input type="checkbox" value="1h" checked> 1h (Confirmation)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Crypto Trading Bot Dashboard. Real-time monitoring and analysis.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/chart.min.js"></script>
+    <script src="js/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
